@@ -12,14 +12,14 @@
   },
   "scripts": {
     "start": "node index.js",
-    "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
+    "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* npm run start",
     "lint": "esw *.js server config --color",
-    "lint:watch": "yarn lint -- --watch",
-    // "precommit": "yarn lint && yarn test",
+    "lint:watch": "npm run lint -- --watch",
+    "precommit": "npm run lint && npm run test",
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors server --recursive",
-    "test:watch": "yarn test -- --watch",
+    "test:watch": "npm run test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
-    "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
+    "test:check-coverage": "npm run test:coverage && istanbul check-coverage",
     "report-coverage": "coveralls < ./coverage/lcov.info"
   },
   "repository": {
@@ -40,6 +40,7 @@
     "boilerplate"
   ],
   "dependencies": {
+    "axios": "^0.19.0",
     "bluebird": "3.5.1",
     "body-parser": "1.18.2",
     "compression": "1.7.2",
