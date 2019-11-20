@@ -9,15 +9,15 @@ const APIError = require('../helpers/APIError');
 const ItemSchema = new mongoose.Schema({
   id: {
     type: Number,
-    required: true,
+    required: false,
   },
   chat_link: {
     type: String,
-    required: true,
+    required: false,
   },
   name: {
     type: String,
-    required: true,
+    required: false
   },
   icon: {
     type: String,
@@ -29,7 +29,7 @@ const ItemSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    required: true
+    required: false
   },
   rarity: {
     type: String,
@@ -37,11 +37,11 @@ const ItemSchema = new mongoose.Schema({
   },
   level: {
     type: Number,
-    required: true,
+    required: false,
   },
   vendor_value: {
     type: Number,
-    required: true,
+    required: false,
   },
   default_skin: {
     type: Number,
@@ -49,15 +49,15 @@ const ItemSchema = new mongoose.Schema({
   },
   flags: {
     type: [String],
-    required: true,
+    required: false,
   },
   game_types: {
     type: [String],
-    required: true,
+    required: false,
   },
   restrictions: {
     type: [String],
-    required: true,
+    required: false,
   },
   upgrades_into: {
     type: [mongoose.Schema.Types.Mixed],
@@ -71,7 +71,18 @@ const ItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: false,
   },
+}, {
+  timestamps: true,
+});
 
+ItemSchema.index({ name: 'text', description: 'text' }, { name: 'textSearch', weights: { name: 10, description: 5 } });
+
+ItemSchema.on('index', (err) => {
+  if (err) {
+    console.error('Item index error: %s', err);
+  } else {
+    console.info('Item indexing complete');
+  }
 });
 
 /**
@@ -114,9 +125,13 @@ ItemSchema.statics = {
    * @param {number} limit - Limit number of items to be returned.
    * @returns {Promise<Item[]>}
    */
-  list({ skip = 0, limit = 50 } = {}) {
+  list({ skip = 0, limit = 50, search } = {}) {
+    const natualLanguageQuery = search ? {
+      $text: { $search: search }
+    } : {};
     return this.find()
-      .sort({ createdAt: -1 })
+      // .sort({ createdAt: -1 })
+      .find(natualLanguageQuery)
       .skip(+skip)
       .limit(+limit)
       .exec();
