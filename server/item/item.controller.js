@@ -97,7 +97,7 @@ function get(req, res) {
  * @returns {Item[]}
  */
 function list(req, res, next) {
-  const { limit = 5, skip = 0, search } = req.query;
+  const { limit = 50, skip = 0, search } = req.query;
   Item.list({ limit, skip, search })
     .then(items => res.json(items))
     .catch(e => next(e));
