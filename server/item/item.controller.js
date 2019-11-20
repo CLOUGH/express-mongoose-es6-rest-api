@@ -25,7 +25,7 @@ function updateDb(req, res, next) {
       .then((dbItemIds) => {
         // filter items already being tracked
         const itemsLimit = 200;
-        const requestDelay = (60 * 1000) / Math.floor(headers['x-rate-limit-limit'] * 0.8);
+        const requestDelay = (60 * 1000) / Math.floor(headers['x-rate-limit-limit'] * 0.4);
         console.log({ requestDelay });
         const filterItemIds = itemIds
           .filter(itemId => dbItemIds.findIndex(dbItemId => dbItemId.id === itemId) === -1);
