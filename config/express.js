@@ -1,5 +1,5 @@
 const express = require('express');
-const logger = require('morgan');
+// const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compress = require('compression');
@@ -17,7 +17,7 @@ const APIError = require('../server/helpers/APIError');
 const app = express();
 
 if (config.env === 'development') {
-  app.use(logger('dev'));
+  // app.use(logger('dev'));
 }
 
 // parse body params and attache them to req.body
@@ -32,18 +32,18 @@ app.use(methodOverride());
 app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
-app.use(cors());
+app.use(cors({ exposedHeaders: ['Content-Length', 'X-LENGTH', 'X-LIMIT', 'X-PAGE', 'X-PAGES'] }));
 
 // enable detailed API logging in dev env
 if (config.env === 'development') {
   expressWinston.requestWhitelist.push('body');
   expressWinston.responseWhitelist.push('body');
-  app.use(expressWinston.logger({
-    winstonInstance,
-    meta: true, // optional: log meta data about request (defaults to true)
-    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
-    colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
-  }));
+  // app.use(expressWinston.logger({
+  //   winstonInstance,
+  //   meta: true, // optional: log meta data about request (defaults to true)
+  //   msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
+  //   colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
+  // }));
 }
 
 // mount all routes on /api path

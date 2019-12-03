@@ -97,9 +97,27 @@ function get(req, res) {
  * @returns {Item[]}
  */
 function list(req, res, next) {
-  const { limit = 50, skip = 0, search } = req.query;
-  Item.list({ limit, skip, search })
-    .then(items => res.json(items))
+  const { limit = 50, page = 1, search } = req.query;
+  console.log(req.query);
+
+  const nlQuery = search ? {
+    $and: [
+      {
+        $or: [
+          { $text: { $search: search } },
+          // { name: { $regex: search, $options: 'i' } }
+        ]
+      }
+    ]
+  } : {};
+  Item.paginate(nlQuery, { limit: +limit, page: +page })
+    .then((result) => {
+      res.set('X-LENGTH', result.total)
+        .set('X-LIMIT', result.limit)
+        .set('X-PAGE', result.page)
+        .set('X-PAGES', result.pages)
+        .json(result.docs);
+    })
     .catch(e => next(e));
 }
 
